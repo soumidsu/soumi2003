@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #6fb1fc, #3c83f3);
+            color: white;
+            text-align: center;
+        }
+
+        input, button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        button {
+            background: #ffba08;
+            color: #333;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #ffa502;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #menu-container, #weather-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="login-container" class="container">
+        <h1>Welcome to Weather App</h1>
+        <input type="text" id="username" placeholder="Enter Username">
+        <button id="login-btn">Login</button>
+    </div>
+
+    <div id="menu-container" class="container">
+        <h1>Hi, <span id="user-name"></span>!</h1>
+        <p>Select an option:</p>
+        <button onclick="showWeather()">Check Weather</button>
+        <button onclick="getCurrentLocationWeather()">Current Location Weather</button>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div id="weather-container" class="container">
+        <h1>Weather App</h1>
+        <input type="text" id="city-input" placeholder="Enter city name">
+        <button id="search-btn">Get Weather</button>
+        <div id="weather-info" class="hidden">
+            <h2 id="city-name"></h2>
+            <p id="temperature"></p>
+            <p id="description"></p>
+            <p id="humidity"></p>
+        </div>
+        <button onclick="backToMenu()">Back to Menu</button>
+    </div>
+
+    <script>
+        // Initial Setup
+        const loginContainer = document.getElementById("login-container");
+        const menuContainer = document.getElementById("menu-container");
+        const weatherContainer = document.getElementById("weather-container");
+        const usernameInput = document.getElementById("username");
+        const userNameDisplay = document.getElementById("user-name");
+        const apiKey = "a0de83a83f2723d9af2b7b309bb81385"; // Replace with your OpenWeatherMap API key
+
+        // Login Functionality
+        document.getElementById("login-btn").addEventListener("click", function () {
+            const username = usernameInput.value.trim();
+            if (username === "") {
+                alert("Please enter a valid username!");
+            } else {
+                sessionStorage.setItem("username", username);
+                userNameDisplay.textContent = username;
+                loginContainer.style.display = "none";
+                menuContainer.style.display = "block";
+            }
+        });
+
+        // Logout Functionality
+        function logout() {
+            sessionStorage.clear();
+            menuContainer.style.display = "none";
+            loginContainer.style.display = "block";
+        }
+
+        // Show Weather Page
+        function showWeather() {
+            menuContainer.style.display = "none";
+            weatherContainer.style.display = "block";
+        }
+
+        // Back to Menu
+        function backToMenu() {
+            weatherContainer.style.display = "none";
+            menuContainer.style.display = "block";
+        }
+
+        // Fetch Weather Data for a City
+        document.getElementById("search-btn").addEventListener("click", function () {
+            const city = document.getElementById("city-input").value.trim();
+            if (city === "") {
+                alert("Please enter a city name!");
+                return;
+            }
+
+            fetchWeather(https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric);
+        });
+
+        // Fetch Weather Data for Current Location
+        function getCurrentLocationWeather() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    fetchWeather(https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric);
+                }, error => {
+                    alert("Unable to get your location. Please try again.");
+                });
+            } else {
+                alert("Geolocation is not supported by your browser.");
+            }
+        }
+
+        // Fetch and Display Weather Data
+        function fetchWeather(apiUrl) {
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Weather data not found");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById("weather-info").classList.remove("hidden");
+                    document.getElementById("city-name").textContent = Weather in ${data.name};
+                    document.getElementById("temperature").textContent = Temperature: ${data.main.temp}°C;
+                    document.getElementById("description").textContent = Condition: ${data.weather[0].description};
+                    document.getElementById("humidity").textContent = Humidity: ${data.main.humidity}%;
+                    showWeather();
+                })
+                .catch(error => {
+                    alert(error.message);
+                });
+        }
+
+        // Check for Logged-In User
+        document.addEventListener("DOMContentLoaded", function () {
+            const username = sessionStorage.getItem("username");
+            if (username) {
+                userNameDisplay.textContent = username;
+                loginContainer.style.display = "none";
+                menuContainer.style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>

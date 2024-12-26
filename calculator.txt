@@ -1,0 +1,113 @@
+import java.util.Scanner;
+
+public class Calculator {
+    private Scanner scanner;
+
+    public Calculator() {
+        scanner = new Scanner(System.in);
+    }
+
+    public void start() {
+        System.out.println("Welcome to the Calculator!");
+        while (true) {
+            System.out.println("Choose an operation:");
+            System.out.println("1. Addition");
+            System.out.println("2. Subtraction");
+            System.out.println("3. Multiplication");
+            System.out.println("4. Division");
+            System.out.println("5. Square Root");
+            System.out.println("6. Power");
+            System.out.println("7. Exit");
+            int choice = scanner.nextInt();
+
+            if (choice == 7) {
+                System.out.println("Exiting the calculator. Goodbye!");
+                break;
+            }
+
+            double num1, num2;
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter first number: ");
+                    num1 = scanner.nextDouble();
+                    System.out.print("Enter second number: ");
+                    num2 = scanner.nextDouble();
+                    System.out.println("Result: " + add(num1, num2));
+                    break;
+                case 2:
+                    System.out.print("Enter first number: ");
+                    num1 = scanner.nextDouble();
+                    System.out.print("Enter second number: ");
+                    num2 = scanner.nextDouble();
+                    System.out.println("Result: " + subtract(num1, num2));
+                    break;
+                case 3:
+                    System.out.print("Enter first number: ");
+                    num1 = scanner.nextDouble();
+                    System.out.print("Enter second number: ");
+                    num2 = scanner.nextDouble();
+                    System.out.println("Result: " + multiply(num1, num2));
+                    break;
+                case 4:
+                    System.out.print("Enter first number: ");
+                    num1 = scanner.nextDouble();
+                    System.out.print("Enter second number: ");
+                    num2 = scanner.nextDouble();
+                    if (num2 != 0) {
+                        System.out.println("Result: " + divide(num1, num2));
+                    } else {
+                        System.out.println("Error: Division by zero is not allowed.");
+                    }
+                    break;
+                case 5:
+                    System.out.print("Enter a number: ");
+                    num1 = scanner.nextDouble();
+                    if (num1 >= 0) {
+                        System.out.println("Result: " + squareRoot(num1));
+                    } else {
+                        System.out.println("Error: Cannot calculate square root of a negative number.");
+                    }
+                    break;
+                case 6:
+                    System.out.print("Enter base: ");
+                    num1 = scanner.nextDouble();
+                    System.out.print("Enter exponent: ");
+                    num2 = scanner.nextDouble();
+                    System.out.println("Result: " + power(num1, num2));
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+        scanner.close();
+    }
+
+    private double add(double a, double b) {
+        return a + b;
+    }
+
+    private double subtract(double a, double b) {
+        return a - b;
+    }
+
+    private double multiply(double a, double b) {
+        return a * b;
+    }
+
+    private double divide(double a, double b) {
+        return a / b;
+    }
+
+    private double squareRoot(double a) {
+        return Math.sqrt(a);
+    }
+
+    private double power(double base, double exponent) {
+        return Math.pow(base, exponent);
+    }
+
+    public static void main(String[] args) {
+        Calculator calculator = new Calculator();
+        calculator.start();
+    }
+}
